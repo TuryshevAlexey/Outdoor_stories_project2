@@ -1,0 +1,26 @@
+.nav-link{
+    color: whitesmoke;
+}
+.nav-link:focus, .nav-link:hover{
+    color:crimson;
+}
+.nav-pills .nav-link.active{
+    background-color: red ;
+}
+.center-block {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+.footer {
+    position: relative !important;
+}
+html, body{
+    height: 100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
+}
+.content {
+    flex: 1 0 auto;
+}

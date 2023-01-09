@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5 shadow p-3 mb-5 bg-body rounded">
+    <div class="card mb-3 border-0">
+        <div class="row g-0">
+        <div class="col-md-2 сenter-block">
+            <img src="{{ user.image.url }}" class="rounded mx-auto d-block img-fluid img-thumbnail" alt="...">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body pt-0">
+            <h5 class="card-title">Профиль пользователя {{ profile.username }}</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Имя: {{ profile.first_name }}</li>
+                <li class="list-group-item">Фамилия: {{ profile.last_name }}</li>
+                <li class="list-group-item">Email: {{ profile.email }}</li>
+                {% if profile.description %}
+                    <li class="list-group-item">О себе: {{ profile.description }}</li>
+                {% endif %}
+            </ul>
+            <div class="card-body">
+                <a href="{% url 'posts:profile_posts' user %}" class="card-link">Все посты пользователя</a>
+                {% if user.username == profile.username %}
+                    <a href="{% url 'posts:profile_update' user %}" class="card-link">Изменить профиль</a>
+                {% endif %}
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

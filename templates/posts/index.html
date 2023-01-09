@@ -1,0 +1,53 @@
+<!-- templates/posts/index.html -->
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% block title %}
+ {{ title }}
+{% endblock %}
+
+{% block content %}
+<div class="container py-5 shadow p-3 mb-5 bg-body rounded">
+  {% for post in posts %}
+  <article>
+    <div class="row">
+      <div class="col-1">
+        {% thumbnail user.image "200x200" crop="center" upscale=False as im %}
+          <img class="card-img col-1 my-2 img-fluid" src="{{ im.url }}">
+        {% endthumbnail %}
+      </div>
+      <ul class="col-md-11 list-unstyled pt-1 align-middle  position-relative">
+        <li>Автор: <a href="{% url 'posts:profile' post.author %}" class="text-reset">{{ post.author.username }}</a></li>
+        <li class="position-absolute bottom-1 end-0 text-muted me-2">Дата публикации: {{ post.pub_date|date:"d E Y"}}</li>
+        {% if post.category %}
+          <li> Категория:
+            <a href="{% url 'posts:category' post.category.slug %}" class="text-reset">{{ post.category.title }}</a>
+          </li>
+        {% endif %}
+        <div><hr></div>
+      </ul>
+    </div>
+    <div class="container mb-5 text-center">
+      <p class="h2">{{ post.title }}</p>
+    </div>
+    <div>
+      {% thumbnail post.photo "1920x1080" crop="center" upscale=True as im %}
+        <img class="card-img my-2" src="{{ im.url }}">
+      {% endthumbnail %}
+    </div>
+    {% autoescape on %}
+      <div class='py-5 ms-3'>
+        <p>{{ post.text|truncatewords:50|safe }}</p>
+        {% if post.text|wordcount > 50 %}
+          <div class="clear ms-3"></div>
+          <p class="link-read-post text-end"><a href="{{ post.get_absolute_url }}">Читать пост</a></p>
+        {% endif %}
+      </div>
+    {% endautoescape %}
+    {% if not forloop.last %}
+      <hr>
+    {% endif %}
+  </article>
+  {% endfor %}
+  {% include 'posts/includes/paginator.html' %}
+</div>
+{% endblock %}
