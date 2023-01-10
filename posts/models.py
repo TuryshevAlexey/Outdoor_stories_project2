@@ -56,9 +56,9 @@ class Post(models.Model):
     category = models.ForeignKey(
         Category,
         related_name='posts',
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL,
+        # blank=True,
+        # null=True,
+        on_delete=models.CASCADE,
         help_text='Выберите категорию',
         verbose_name='Категория',
     )
@@ -66,8 +66,8 @@ class Post(models.Model):
         'Изображение',
         upload_to="images/%Y/%m/%d/",
         help_text='Добавьте изображение к посту',
-        null=True,
-        blank=True,
+        # null=True,
+        # blank=True,
     )
     is_published = models.BooleanField(
         blank=False,

@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from .forms import AddPostForm
 from .models import Category, Post, User
@@ -23,7 +23,24 @@ class Home(ListView):
         return context
 
     def get_queryset(self):
-        return Post.objects.all()
+        return Post.objects.filter(is_published=True).select_related('author', 'category')
+
+
+class Draft(ListView):
+    paginate_by = 5
+    model = Post
+    template_name = 'posts/index.html'
+    context_object_name = 'posts'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Черновик'
+        count = Post.objects.filter(is_published=False, author=self.request.user).count()
+        context['count'] = count
+        return context
+
+    def get_queryset(self):
+        return Post.objects.filter(is_published=False, author=self.request.user).select_related('author', 'category')
 
 
 class ShowPost(DetailView):
@@ -92,6 +109,21 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
     # success_url = reverse_lazy('profile:index')
     extra_context = {'is_edit': True}
 
+
+class PostDelete(LoginRequiredMixin, DeleteView):
+    model = Post
+    template_name = 'posts/post_confirm_delete.html'
+    id_url_kwarg = 'id'
+    context_object_name = 'post'
+    success_url = reverse_lazy('posts:index')
+
+
+@login_required
+def public_post(request, pk):
+    post = get_object_or_404(Post, id=pk)
+    post.is_published = True
+    post.save()
+    return redirect('posts:index')
 
 def contact(request):
     return HttpResponse("Обратная связь")

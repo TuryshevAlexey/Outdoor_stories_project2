@@ -15,6 +15,7 @@ class AddPostForm(forms.ModelForm):
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-input'}),
             'text': forms.Textarea(attrs={'cols': 50, 'rows': 10}),
+            'photo': forms.FileInput(),
         }
 
     def clean_title(self):

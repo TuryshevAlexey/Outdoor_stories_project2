@@ -16,7 +16,7 @@
               </div>
               <div class="card-body">
                 {% load user_filters %}
-                <form method="post"
+                <form enctype="multipart/form-data" method="post"
                 action="{% if is_edit %}
                           {% url 'posts:post_update' post.id %}
                         {% else %}

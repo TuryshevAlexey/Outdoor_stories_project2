@@ -7,20 +7,25 @@
 
 {% block content %}
 <div class="container py-5 shadow p-3 mb-5 bg-body rounded">
+  {% url 'posts:post_draft' as draft %}
+  {% if request.path == draft %}
+    <h2 class="container py-0 pt-0 fst-italic text-center">Черновик</h2>
+    <p class="fs-6 text-muted text-center pt-0">Всего отложенных постов: {{ count }}</p>
+  {% endif %}
   {% for post in posts %}
   <article>
     <div class="row">
       <div class="col-1">
-        {% thumbnail user.image "200x200" crop="center" upscale=False as im %}
+        {% thumbnail post.author.image "200x200" crop="center" upscale=False as im %}
           <img class="card-img col-1 my-2 img-fluid" src="{{ im.url }}">
         {% endthumbnail %}
       </div>
       <ul class="col-md-11 list-unstyled pt-1 align-middle  position-relative">
-        <li>Автор: <a href="{% url 'posts:profile' post.author %}" class="text-reset">{{ post.author.username }}</a></li>
+        <li>Автор: <a href="{% url 'posts:profile' post.author %}" class="text-reset text-decoration-none">{{ post.author.username }}</a></li>
         <li class="position-absolute bottom-1 end-0 text-muted me-2">Дата публикации: {{ post.pub_date|date:"d E Y"}}</li>
         {% if post.category %}
           <li> Категория:
-            <a href="{% url 'posts:category' post.category.slug %}" class="text-reset">{{ post.category.title }}</a>
+            <a href="{% url 'posts:category' post.category.slug %}" class="text-reset text-decoration-none">{{ post.category.title }}</a>
           </li>
         {% endif %}
         <div><hr></div>
@@ -31,7 +36,7 @@
     </div>
     <div>
       {% thumbnail post.photo "1920x1080" crop="center" upscale=True as im %}
-        <img class="card-img my-2" src="{{ im.url }}">
+        <a href="{{ post.get_absolute_url }}"><img class="card-img my-2" src="{{ im.url }}"></a>
       {% endthumbnail %}
     </div>
     {% autoescape on %}

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load thumbnail %}
 {% block title %}
   {{ post.text|truncatechars:30 }}
 {% endblock %}
@@ -31,12 +32,22 @@
         </li>
       </ul>
     </aside>
-    <article class="col-12 col-md-9">
+    <article class="col-12 col-md-9 pe-2">
       <div class="container py-5">
         <p class="h2">{{ post.title }}</p>
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-          <a class="btn btn-outline-primary me-md-2" href="{% url 'posts:post_update' post.pk %}" type="button" >Изменить</a>
-          <a class="btn btn-outline-danger" type="button">Удалить</a>
+        {% if request.user == post.author %}
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            {% if not post.is_published %}
+              <a class="btn btn-outline-success me-md-2" href="{% url 'posts:post_public' post.pk %}">Опубликовать</a>
+            {% endif %}
+            <a class="btn btn-outline-primary me-md-2" href="{% url 'posts:post_update' post.pk %}">Изменить</a>
+            <a class="btn btn-outline-danger" href="{% url 'posts:post_delete' post.pk %}">Удалить</a>
+          </div>
+        {% endif %}
+        <div>
+          {% thumbnail post.photo "1920x1080" crop="center" upscale=True as im %}
+            <a href="{{ post.get_absolute_url }}"><img class="card-img my-2" src="{{ im.url }}"></a>
+          {% endthumbnail %}
         </div>
         <p>{{ post.text|safe }}</p>
       </div>

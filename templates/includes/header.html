@@ -35,17 +35,19 @@
                 href="{% url 'admin:index' %}">Admin</a>
             </li>
             {% endif %}
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" type="button" data-bs-display="static" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">{{ user.username }}</a>
+            {% with request.resolver_match.url_name as url_name  %}
+            <li class="nav-item pe-1 dropdown">
+              <a class="nav-link {% if url_name in 'profile,post_draft' %}active{% endif %} dropdown-toggle"  data-bs-display="static" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">{{ user.username }}</a>
               <ul class="dropdown-menu dropdown-menu-end" data-bs-display="static" >
-                <li><a class="dropdown-item" href="{% url 'posts:profile' user %}">Профиль</a></li>
+                <li><a class="dropdown-item {% if url_name == 'profile' %}active{% endif %}" href="{% url 'posts:profile' user %}">Профиль</a></li>
                 <li><a class="dropdown-item" href="{% url 'users:password_change' %}">Изменить пароль</a></li>
                 <li><a class="dropdown-item" href="#">Избранное</a></li>
-                <li><a class="dropdown-item" href="#">Черновик</a></li>
+                <li><a class="dropdown-item {% if url_name == 'post_draft' %}active{% endif %}" href="{% url 'posts:post_draft' %}">Черновик</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="{% url 'users:logout' %}">Выход</a></li>
               </ul>
             </li>
+            {% endwith %}
             {% else %}
             <li class="nav-item">
               <a class="nav-link link-light {% if view_name == 'users:login' %}active{% endif %}"
